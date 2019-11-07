@@ -32,11 +32,12 @@ func PanicCapturingGo(f func(context.Context), panicChan chan *GoroutinePanic, p
 			if processWG != nil {
 				processWG.Done()
 			}
+			if cancelFunc != nil {
+				cancelFunc()
+			}
+
 			if panicChan != nil {
 				if r := recover(); r != nil {
-					if cancelFunc != nil {
-						cancelFunc()
-					}
 					panicChan <- &GoroutinePanic{r, stackTrace()}
 				}
 			}
